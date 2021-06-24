@@ -3,14 +3,67 @@ const Tutorial = db.tutorials;
 const excel= require('exceljs')
 
 const readXlsxFile = require('read-excel-file/node');
+
+// const upload = async (req, res) => {
+//   try {
+//     if (req.file == undefined) {
+//       return res.status(400).send("Please upload an excel file!");
+//     }
+
+//     let path =
+//       __basedir + "/resources/static/assets/uploads/" + req.file.filename;
+
+//     readXlsxFile(path).then((rows) => {
+//       // skip header
+//       rows.shift();
+
+//       let tutorials = [];
+
+//       rows.forEach((row) => {
+//         let tutorial = {
+//           id: row[0],
+//           title: row[1],
+//           description: row[2],
+//           published: row[3],
+//         };
+
+//         tutorials.push(tutorial);
+//       });
+
+//       Tutorial.bulkCreate(tutorials)
+//         .then(() => {
+//           res.status(200).send({
+//             message: "Uploaded the file successfully: " + req.file.originalname,
+//           });
+//         })
+//         .catch((error) => {
+//           res.status(500).send({
+//             message: "Fail to import data into database!",
+//             error: error.message,
+//           });
+//         });
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).send({
+//       message: "Could not upload the file: " + req.file.originalname,
+//     });
+//   }
+// };
+
 const upload = async (req, res) => {
+
     try {
-        if (req.file == undefined) {
+        if (req.file == undefined) 
+        {
             return res.status(400).send('Please upload an excel file!');
         }
         let path = __basedir + '/resources/static/assets/uploads/' + req.file.filename;
-        readXlsxFile(path).then((rows) => {
-                //skip Header
+        console.log('value  tutorialc path' + path )
+       
+        readXlsxFile(path).then((rows) =>
+         {
+             //skip Header
                 rows.shift();
                 let tutorials = [];
                 rows.forEach((row) => {
@@ -20,7 +73,10 @@ const upload = async (req, res) => {
                         description: row[2],
                         published: row[3]
                     };
+                  //  console.log('value  tutorial' + tutorials)
                     tutorials.push(tutorial);
+                  //  console.log('value  tutorial s ' + tutorials)
+
                 });
                 Tutorial.bulkCreate(tutorials)
                     .then(() => {
@@ -35,22 +91,21 @@ const upload = async (req, res) => {
                         });
                     });
             })
-            .catch((err) => {
+             .catch((err) => {
                 res.status(500).send({
-                    message: "cant import data into database!",
-                    err: err.message
-                });
+                     message: "cant import data into database!",
+                     err: err.message
+               });
                 console.log(err)
             });
 
-    } catch (err) {
+         } catch (err) {
         console.error(err);
         req.status(500).send({
             message: "Could not upload the file: " + req.file.originalname,
         });
     }
 };
-
 const getAllTutorials = (req, res) => {
 
     Tutorial.findAll()
